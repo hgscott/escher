@@ -23,6 +23,7 @@ import random
 import string
 import shutil
 from typing import Optional
+import execjs
 
 # set up jinja2 template location
 env = Environment(loader=PackageLoader('escher', 'templates'))
@@ -626,3 +627,19 @@ class Builder(widgets.DOMWidget):
 
         with open(expanduser(filepath), 'wb') as f:
             f.write(html.encode('utf-8'))
+
+    def save_png(self, filepath):
+        """Save a PNG image of the map.
+
+        :param string filepath:
+            The name of the PNG file.
+        """
+        js_code = """
+        this.map.save_png()
+        """
+
+        # Initialize PyExecJS with the JavaScript code
+        ctx = execjs.compile(js_code)
+
+        # Call the save_png function from JavaScript
+        ctx.call("save_png")
